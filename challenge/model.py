@@ -4,10 +4,6 @@ from datetime import datetime
 import numpy as np
 import pickle
 
-# In order to run the model with the tests, the following line should be uncommented.
-# import os
-# os.chdir(os.path.dirname(os.path.abspath(__file__)))
-
 from typing import Tuple, Union, List
 
 class DelayModel:
@@ -25,8 +21,6 @@ class DelayModel:
         """
         try:
             self._model = pickle.load(open("data/model.h5", 'rb'))
-            # self._model = pickle.load(open("../../data/model.h5", 'rb')) # In order to run the model with the test_model.py, the following line should be uncommented.
-            # self._model = pickle.load(open("../data/model.h5", 'rb')) # In order to run the model with the test_api.py, the following line should be uncommented.
         except:
             self._model = None # Model should be saved in this attribute.
         self.top_10_features = [
@@ -89,8 +83,7 @@ class DelayModel:
             axis = 1
         )
             
-        # pickle.dump(features, open("data/all_features.p", 'wb'))
-        pickle.dump(features, open("../../data/all_features.p", 'wb')) # In order to run the model with the tests, the following line should be uncommented.
+        pickle.dump(features, open("data/all_features.p", 'wb'))
         
         return (features[self.top_10_features], data['delay'].to_frame()) if target_column else features[self.top_10_features]
 
@@ -120,7 +113,6 @@ class DelayModel:
         self._model.fit(features, target.to_numpy().ravel())
         
         pickle.dump(self._model, open("data/model.h5", 'wb'))
-        # pickle.dump(self._model, open("../../data/model.h5", 'wb')) # In order to run the model with the tests, the following line should be uncommented.
         
         return
 
@@ -259,7 +251,7 @@ class DelayModel:
         """
         
         features = pickle.load(open("data/all_features.p", 'rb'))
-        # features = pickle.load(open("../data/all_features.p", 'rb')) # In order to run the model with the test_api.py, the following line should be uncommented.
+        
         opera_columns = [col for col in features.columns.tolist()
                         if col.startswith('OPERA')]
         replace_opera = [col.replace('OPERA_', '') for col in opera_columns]
