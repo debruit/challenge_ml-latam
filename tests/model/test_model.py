@@ -5,6 +5,11 @@ from sklearn.metrics import classification_report
 from sklearn.model_selection import train_test_split
 from challenge.model import DelayModel
 
+# In order to run this test, the following line should be uncommented.
+# This is because the test is run from the tests folder, and the data is in the data folder in the root of the project.
+# import os
+# os.chdir(os.path.dirname(os.path.abspath(__file__)))
+
 class TestModel(unittest.TestCase):
 
     FEATURES_COLS = [
@@ -28,7 +33,7 @@ class TestModel(unittest.TestCase):
     def setUp(self) -> None:
         super().setUp()
         self.model = DelayModel()
-        self.data = pd.read_csv(filepath_or_buffer="../data/data.csv")
+        self.data = pd.read_csv(filepath_or_buffer="../../data/data.csv")
         
 
     def test_model_preprocess_for_training(
