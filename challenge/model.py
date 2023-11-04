@@ -26,6 +26,7 @@ class DelayModel:
         try:
             self._model = pickle.load(open("data/model.h5", 'rb'))
             # self._model = pickle.load(open("../../data/model.h5", 'rb')) # In order to run the model with the test_model.py, the following line should be uncommented.
+            # self._model = pickle.load(open("../data/model.h5", 'rb')) # In order to run the model with the test_api.py, the following line should be uncommented.
         except:
             self._model = None # Model should be saved in this attribute.
         self.top_10_features = [
@@ -61,6 +62,7 @@ class DelayModel:
                 * This column contains 1 if the difference between the scheduled time and the actual time is greater than 15 minutes and 0 otherwise.
             - Create dummy variables for the following columns: OPERA, TIPOVUELO, MES.
                 * The dummy variables are created for the top 10 values of each column.
+            - Save the features to be used for training.
             - Save the model to be used for prediction.
 
         Args:
@@ -86,6 +88,9 @@ class DelayModel:
             pd.get_dummies(data['MES'], prefix = 'MES')], 
             axis = 1
         )
+            
+        # pickle.dump(features, open("data/all_features.p", 'wb'))
+        pickle.dump(features, open("../../data/all_features.p", 'wb')) # In order to run the model with the tests, the following line should be uncommented.
         
         return (features[self.top_10_features], data['delay'].to_frame()) if target_column else features[self.top_10_features]
 
@@ -234,3 +239,59 @@ class DelayModel:
         fecha_i = datetime.strptime(data['Fecha-I'], '%Y-%m-%d %H:%M:%S')
         min_diff = ((fecha_o - fecha_i).total_seconds())/60
         return min_diff
+    
+    def check_response(self, data: object) -> Union[Tuple[str, str], List[int]]:
+        """
+        Check if the data has correct values in their columns. If the data has correct values in their columns, predict the delay of the flights in the data, otherwise, return an error to raise an exception.
+        
+        the function goes through the following steps:
+            - Load the features to be used for prediction.
+            - Check if the data has correct values in their columns.
+            - Return the predicted delay of the flights in the data or an error to raise an exception.
+            
+        Args:
+            data (object): data to predict.
+            
+        Returns:
+            Tuple[str, str]: error to raise an exception.
+            or
+            List[int]: predicted delay of the flights in the data. 
+        """
+        
+        features = pickle.load(open("data/all_features.p", 'rb'))
+        # features = pickle.load(open("../data/all_features.p", 'rb')) # In order to run the model with the test_api.py, the following line should be uncommented.
+        opera_columns = [col for col in features.columns.tolist()
+                        if col.startswith('OPERA')]
+        replace_opera = [col.replace('OPERA_', '') for col in opera_columns]
+        
+        data_df = []
+
+        for flight in data.flights:
+            if (flight['MES'] > 12 or flight['MES'] < 1):
+                return ('MES', "Column MES not found")
+            elif not (flight['TIPOVUELO'] == 'N' or flight['TIPOVUELO'] == 'I'):
+                return ('TIPOVUELO', "Column TIPOVUELO not found")
+            elif (flight['OPERA'] not in replace_opera):
+                return ('OPERA', "Column OPERA not found")
+            else:
+                data_df.append(flight)
+                
+        data_df = pd.DataFrame(data_df, columns=['OPERA', 'TIPOVUELO', 'MES'])
+    
+        features_df = pd.concat([
+            pd.get_dummies(data_df['OPERA'], prefix='OPERA'),
+            pd.get_dummies(data_df['TIPOVUELO'], prefix='TIPOVUELO'),
+            pd.get_dummies(data_df['MES'], prefix='MES')],
+            axis=1
+        )
+        
+        data_predict = [[0] * len(self.top_10_features)]
+        
+        for col in features_df.columns.tolist():
+            if col in self.top_10_features:
+                data_predict[0][self.top_10_features.index(col)] = features_df[col].values[0]
+        
+        df = pd.DataFrame(data_predict, columns=self.top_10_features)
+        
+        
+        return self.predict(df)

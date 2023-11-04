@@ -1,18 +1,11 @@
-# First Part Software Engineer (ML & LLMs) Challenge
+# Second Part Software Engineer (ML & LLMs) Challenge
 
 ## Overview
 
-The first part of the **Software Engineer (ML & LLMs)** Application Challenge. In this, you will have the transcribed model from the .ipynb notebook to the model.py file. Each function in the model.py file is documented and explains how it works. In order to run the tests a few lines were added in the file and documented.
+The second part of the **Software Engineer (ML & LLMs)** Application Challenge. In this, you will have the API to consume in order to predict the delay of some flights. The API receives an Object containing the flights to predict. If any of the columns values are incorrect it will raise an HttpException, otherwise return the delay prediction. In order to run the tests a few lines were added in the model.py file and documented.
 
-The **Logistic Regression model was chosen** to train and predict the data. Exploring the data, the following was found:
-- The data is linear and the features are not correlated. 
-    - Using a statistical test, such as the linearity test by scipy, the p-value of each attribute of the top 10 was less than 0.05, then the data to train is linear.
-    - Using the .corr() function of a DataFrame, almost all the values were near 0, which led to no-correlated data.
-- Logistic regression works better with linear data and no-correlated features, is also relatively fast to train and deploy.
-
-Additionally, the following bugs were fixed:
-- **exploration.ipynb**: All the code for the plots needed the 'x' and 'y' attributes to be declared in order to run. So, the attributes were included in each plot.
-- **model.py**: The returning object of the preprocess function had a typo, the Union object was defined with parenthesis '()' instead of brackets '[]'. 
+Additionally, the following method were added to model.py file:
+- **check_response**: Given the request predict the delay of the flights or return an error to raise an HttpException.
 
 ## Problem
 
@@ -56,16 +49,11 @@ We need to operationalize the data science work for the airport team. For this, 
 
 *We recommend reading the entire challenge (all its parts) before you start developing.*
 
-### Part I
+### Part II
 
-In order to operationalize the model, transcribe the `.ipynb` file into the `model.py` file:
+Deploy the model in an `API` with `FastAPI` using the `api.py` file.
 
-- If you find any bug, fix it.
-- The DS proposed a few models in the end. Choose the best model at your discretion, argue why. **It is not necessary to make improvements to the model.**
-- Apply all the good programming practices that you consider necessary in this item.
-- The model should pass the tests by running `make model-test`.
+- The `API` should pass the tests by running `make api-test`.
 
-> **Note:**
-> - **You cannot** remove or change the name or arguments of **provided** methods.
-> - **You can** change/complete the implementation of the provided methods.
-> - **You can** create the extra classes and methods you deem necessary.
+> **Note:** 
+> - **You cannot** use other framework.
