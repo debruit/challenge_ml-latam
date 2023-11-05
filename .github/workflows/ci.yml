@@ -74,4 +74,36 @@ jobs:
         with:
           service: 'challenge-service-dev'
           image: 'us-central1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/${{ secrets.GCP_REGISTRY }}/challenge-image-dev:latest'
+
+  test-deployed-image:
+    needs: deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build Docker image for test
+        run: |
+          docker build -f ${GITHUB_WORKSPACE}/Dockerfile.stress -t test_image .
+          docker run --rm test_image
+
+  merge-to-develop:
+    needs: test-deployed-image
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Merge to develop
+        uses: peter-evans/create-pull-request@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: 'Merge feature/part4 to develop'
+          title: 'Merge feature/part4 to develop'
+          body: 'Merge feature/part4 to develop'
+          branch: 'develop'
+          branch-suffix: 'merge-to-develop'
       
