@@ -1,4 +1,4 @@
-# First and Second Part Software Engineer (ML & LLMs) Challenge
+# Part 1, 2, and 3 Software Engineer (ML & LLMs) Challenge
 
 ## Overview
 
@@ -18,6 +18,17 @@ The second part of the **Software Engineer (ML & LLMs)** Application Challenge. 
 
 Additionally, the following method were added to model.py file:
 - **check_response**: Given the request predict the delay of the flights or return an error to raise an HttpException.
+
+The third part of the **Software Engineer (ML & LLMs)** Application Challenge. In this, you will have the dockerized app deployed on GCP. The Dockerfile is using python 3.9 to mitigate errors and additional building wheels on packages like numpy and pandas. This version allow us to save time building the image and deploying it to GCP Container Registry. The following URL is the app deployed: https://challenge-services-h5ewh4tzua-uc.a.run.app 
+
+Running the stress test there were no fails and an average time of 700ms to resolve each request with 2487 requests at the time. The following shows the response time percentiles:
+
+Response time percentiles (approximated)
+ Type     Name                                                              50%    66%    75%    80%    90%    95%    98%    99%  99.9% 99.99%   100% # reqs
+--------|------------------------------------------------------------|---------|------|------|------|------|------|------|------|------|------|------|------|
+ POST     /predict                                                          820    950    980    990   1000   1000   1100   1700   1800   1800   1800   2487
+--------|------------------------------------------------------------|---------|------|------|------|------|------|------|------|------|------|------|------|
+ None     Aggregated                                                        820    950    980    990   1000   1000   1100   1700   1800   1800   1800   2487
 
 ## Problem
 
@@ -83,3 +94,13 @@ Deploy the model in an `API` with `FastAPI` using the `api.py` file.
 
 > **Note:** 
 > - **You cannot** use other framework.
+
+### Part III
+
+Deploy the `API` in your favorite cloud provider (we recomend to use GCP).
+
+- Put the `API`'s url in the `Makefile` (`line 26`).
+- The `API` should pass the tests by running `make stress-test`.
+
+> **Note:** 
+> - **It is important that the API is deployed until we review the tests.**
