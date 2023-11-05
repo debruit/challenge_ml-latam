@@ -2,11 +2,21 @@ name: 'Continuous Delivery'
 
 on: 
   workflow_call:
+    inputs:
+      branch-to-checkout:
+        description: 'The branch to checkout'
+        required: true
+        default: 'main'
+        type: string
 
 jobs:
   merge-pull-request:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ inputs.branch-to-checkout }}
       - id: automerge
         name: automerge
         uses: "pascalgn/automerge-action@v0.15.6"
@@ -20,6 +30,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+        with:
+          ref: ${{ inputs.branch-to-checkout }}
 
       - name: Google Auth
         id: auth
@@ -45,6 +57,11 @@ jobs:
     needs: build-and-push
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ inputs.branch-to-checkout }}
+
       - name: Google Auth
         id: auth
         uses: 'google-github-actions/auth@v1' 

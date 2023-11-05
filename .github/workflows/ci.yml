@@ -100,7 +100,7 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Merge to develop
-        uses: peter-evans/create-pull-request@v3
+        uses: peter-evans/create-pull-request@v5
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           commit-message: 'Merge feature/part4 to develop'
@@ -112,4 +112,6 @@ jobs:
   call-cd-workflow:
     needs: merge-to-develop
     uses: ./.github/workflows/cd.yml
+    with:
+      branch-to-checkout: 'develop'
       
