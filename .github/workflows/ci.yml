@@ -40,7 +40,6 @@ jobs:
         uses: google-github-actions/setup-gcloud@v1
         with:
           project_id: ${{ secrets.GCP_PROJECT_ID }}
-          service_account_key: ${{ secrets.GCP_SA_KEY }}
           export_default_credentials: true
 
       - name: Configure Docker credentials
@@ -65,7 +64,6 @@ jobs:
         uses: google-github-actions/setup-gcloud@v1
         with:
           project_id: ${{ secrets.GCP_PROJECT_ID }}
-          service_account_key: ${{ secrets.GCP_SA_KEY }}
           export_default_credentials: true
 
       - name: Deploy to Cloud Run
@@ -104,6 +102,9 @@ jobs:
           commit-message: 'Merge feature/part4 to develop'
           title: 'Merge feature/part4 to develop'
           body: 'Merge feature/part4 to develop'
+          labels: 'automerge'
           branch: 'develop'
-          branch-suffix: 'merge-to-develop'
+
+  call-cd-workflow:
+    uses: ./.github/workflows/cd.yml
       
