@@ -106,5 +106,6 @@ jobs:
           branch: 'develop'
 
   call-cd-workflow:
+    needs: merge-to-develop
     uses: ./.github/workflows/cd.yml
       
