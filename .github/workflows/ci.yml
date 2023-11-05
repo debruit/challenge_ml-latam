@@ -107,7 +107,7 @@ jobs:
           title: 'Merge feature/part4 to develop'
           body: 'Merge feature/part4 to develop'
           labels: 'automerge'
-          branch: 'develop'
+          base: 'develop'
 
   call-cd-workflow:
     needs: merge-to-develop
