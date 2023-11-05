@@ -22,14 +22,13 @@ jobs:
         id: run-tests
         run: |
           docker run --rm test_image
-          echo "::set-output name=tests_passed::$(if [ $? -eq 0 ]; then echo true; else echo false; fi)"
 
   build-and-push:
     needs: build-and-test
     runs-on: ubuntu-latest
     steps:
       - name: Intall gcloud CLI
-        uses: google-github-actions/setup-gcloud@master
+        uses: google-github-actions/setup-gcloud@v1
         with:
           project_id: ${{ secrets.GCP_PROJECT_ID }}
           service_account_key: ${{ secrets.GCP_SA_KEY }}
@@ -48,7 +47,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Intall gcloud CLI
-        uses: google-github-actions/setup-gcloud@master
+        uses: google-github-actions/setup-gcloud@v1
         with:
           project_id: ${{ secrets.GCP_PROJECT_ID }}
           service_account_key: ${{ secrets.GCP_SA_KEY }}
