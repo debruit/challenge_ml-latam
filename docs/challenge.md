@@ -1,4 +1,4 @@
-# Part 1, 2, and 3 Software Engineer (ML & LLMs) Challenge
+# All parts Software Engineer (ML & LLMs) Challenge
 
 ## Overview
 
@@ -29,6 +29,22 @@ Response time percentiles (approximated)
  POST     /predict                                                          820    950    980    990   1000   1000   1100   1700   1800   1800   1800   2487
 --------|------------------------------------------------------------|---------|------|------|------|------|------|------|------|------|------|------|------|
  None     Aggregated                                                        820    950    980    990   1000   1000   1100   1700   1800   1800   1800   2487
+
+The fourth part of the **Software Engineer (ML & LLMs)** Application Challenge. In this, you will have CI/CD pipeline created and working with the branches develop and main. The idea behind this pipeline states the following:
+
+### CI pipeline
+- First of all, the pipeline will run when there's a 'push' in the develop branch. 
+- The pipeline build a test Dockerfile.tests image to run the model test and api test.
+- Then, it will build the Dockerfile image to push into the Artifact Registry provided by GCP. 
+- Once is pushed, it will deploy the image using Cloud Run in a development service for testing.
+- Then, it will build a test Dockerfile.stress image to run the stress test using the URL provided by the development service.
+- If everything worked well, it will create a PR to the main branch.
+
+### CD pipeline
+- First of all, the pipeline will run when there's a 'push' in the main branch. 
+- The pipeline will build the Dockerfile image to push into the Artifact Registry provided by GCP. 
+- Once is pushed, it will deploy the image using Cloud Run in a production service.
+- If everything worked well, it will print the URL provided by the production service.
 
 ## Problem
 
