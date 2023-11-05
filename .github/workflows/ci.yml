@@ -1,0 +1,29 @@
+name: 'Continuous Integration'
+
+on:
+  push:
+    branches:
+      - feature/part4
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build image
+        run: docker build -f Dockerfile.tests -t test_image .
+
+      - name: Run tests
+        id: run-tests
+        run: |
+          make tests
+          echo "::set-output name=tests_passed::$(if [ $? -eq 0 ]; then echo true; else echo false; fi)"
+
+      - name: Print OK message if tests passed
+        if: ${{ steps.run-tests.outputs.tests_passed == 'true' }}
+        run: echo OK
