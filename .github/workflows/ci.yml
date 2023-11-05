@@ -18,10 +18,10 @@ jobs:
       - name: Build image
         run: docker build -f Dockerfile.tests -t test_image .
 
-      - name: Run tests
+      - name: Run tests on image
         id: run-tests
         run: |
-          make tests
+          docker run --rm test_image
           echo "::set-output name=tests_passed::$(if [ $? -eq 0 ]; then echo true; else echo false; fi)"
 
       - name: Print OK message if tests passed
