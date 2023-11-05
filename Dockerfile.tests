@@ -5,11 +5,11 @@ WORKDIR /code
 
 # 
 COPY ./requirements.txt /code/requirements.txt
-COPY ./requirements-dev.txt /code/requirements-dev.txt
+COPY ./requirements-test.txt /code/requirements-test.txt
 
 # 
 RUN pip install --no-cache-dir --upgrade -r /code/requirements.txt
-RUN pip install --no-cache-dir --upgrade -r /code/requirements-dev.txt
+RUN pip install --no-cache-dir --upgrade -r /code/requirements-test.txt
 
 # 
 COPY ./ /code/
