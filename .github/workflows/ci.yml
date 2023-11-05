@@ -24,6 +24,41 @@ jobs:
           docker run --rm test_image
           echo "::set-output name=tests_passed::$(if [ $? -eq 0 ]; then echo true; else echo false; fi)"
 
-      - name: Print OK message if tests passed
-        if: ${{ steps.run-tests.outputs.tests_passed == 'true' }}
-        run: echo OK
+  build-and-push:
+    needs: build-and-test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Intall gcloud CLI
+        uses: google-github-actions/setup-gcloud@master
+        with:
+          project_id: ${{ secrets.GCP_PROJECT_ID }}
+          service_account_key: ${{ secrets.GCP_SA_KEY }}
+          export_default_credentials: true
+
+      - name: Configure Docker credentials
+        run: gcloud auth configure-docker us-central1-docker.pkg.dev
+    
+      - name: Build and push image
+        run: |
+          docker build -f Dockerfile -t us-central1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/challenge-image-dev:latest .
+          docker push us-central1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/challenge-image-dev:latest
+
+  deploy:
+    needs: build-and-push
+    runs-on: ubuntu-latest
+    steps:
+      - name: Intall gcloud CLI
+        uses: google-github-actions/setup-gcloud@master
+        with:
+          project_id: ${{ secrets.GCP_PROJECT_ID }}
+          service_account_key: ${{ secrets.GCP_SA_KEY }}
+          export_default_credentials: true
+
+      - name: Deploy to Cloud Run
+        run: |
+          gcloud run deploy challenge-service-dev \
+            --image us-central1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/challenge-image-dev:latest \
+            --platform managed \
+            --region us-central1 \
+            --allow-unauthenticated \
+            --set-env-vars=ENVIRONMENT=dev
