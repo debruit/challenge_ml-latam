@@ -42,7 +42,7 @@ The fourth part of the **Software Engineer (ML & LLMs)** Application Challenge. 
 - In the release branch, will create a PR to main branch.
 
 ### CD pipeline
-- First of all, the pipeline will run when the CI workflow is done and successful.
+- First of all, the pipeline will run when the PR made by the release branch is merged. With this, we ensure best practices on running the CD pipeline. 
 - It will merge the PR made by the release branches. 
 - The pipeline will build the Dockerfile image to push into the Artifact Registry provided by GCP. 
 - Once is pushed, it will deploy the image using Cloud Run in a production service.
