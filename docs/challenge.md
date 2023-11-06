@@ -38,10 +38,12 @@ The fourth part of the **Software Engineer (ML & LLMs)** Application Challenge. 
 - Then, it will build the Dockerfile image to push into the Artifact Registry provided by GCP. 
 - Once is pushed, it will deploy the image using Cloud Run in a development service for testing.
 - Then, it will build a test Dockerfile.stress image to run the stress test using the URL provided by the development service.
-- If everything worked well, it will create a PR to the main branch.
+- If everything worked well, it will create a new branch release/**sha** and checkout to it.
+- In the release branch, will create a PR to main branch.
 
 ### CD pipeline
-- First of all, the pipeline will run when there's a 'push' in the main branch. 
+- First of all, the pipeline will run when the CI workflow is done and successful.
+- It will merge the PR made by the release branches. 
 - The pipeline will build the Dockerfile image to push into the Artifact Registry provided by GCP. 
 - Once is pushed, it will deploy the image using Cloud Run in a production service.
 - If everything worked well, it will print the URL provided by the production service.
@@ -120,3 +122,10 @@ Deploy the `API` in your favorite cloud provider (we recomend to use GCP).
 
 > **Note:** 
 > - **It is important that the API is deployed until we review the tests.**
+
+### Part IV
+
+We are looking for a proper `CI/CD` implementation for this development.
+
+- Create a new folder called `.github` and copy the `workflows` folder that we provided inside it.
+- Complete both `ci.yml` and `cd.yml`(consider what you did in the previous parts).

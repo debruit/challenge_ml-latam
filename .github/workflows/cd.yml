@@ -5,13 +5,6 @@ on:
     workflows: ['Continuous Integration']
     types:
       - completed
-  # workflow_call:
-  #   inputs:
-  #     branch-to-checkout:
-  #       description: 'The branch to checkout'
-  #       required: true
-  #       default: 'main'
-  #       type: string
 
 jobs:
   merge-pull-request:
@@ -29,58 +22,58 @@ jobs:
           GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
           MERGE_LABELS: "automerge"
 
-  # build-and-push:
-  #   needs: merge-pull-request
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Checkout code
-  #       uses: actions/checkout@v3
-  #       # with:
-  #       #   ref: ${{ inputs.branch-to-checkout }}
+  build-and-push:
+    needs: merge-pull-request
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        # with:
+        #   ref: ${{ inputs.branch-to-checkout }}
 
-  #     - name: Google Auth
-  #       id: auth
-  #       uses: 'google-github-actions/auth@v1' 
-  #       with:
-  #         credentials_json: '${{ secrets.GCP_SA_KEY }}'
+      - name: Google Auth
+        id: auth
+        uses: 'google-github-actions/auth@v1' 
+        with:
+          credentials_json: '${{ secrets.GCP_SA_KEY }}'
           
-  #     - name: Intall gcloud CLI
-  #       uses: google-github-actions/setup-gcloud@v1
-  #       with:
-  #         project_id: ${{ secrets.GCP_PROJECT_ID }}
+      - name: Intall gcloud CLI
+        uses: google-github-actions/setup-gcloud@v1
+        with:
+          project_id: ${{ secrets.GCP_PROJECT_ID }}
 
-  #     - name: Configure Docker credentials
-  #       run: gcloud auth configure-docker us-central1-docker.pkg.dev
+      - name: Configure Docker credentials
+        run: gcloud auth configure-docker us-central1-docker.pkg.dev
     
-  #     - name: Build and push image
-  #       run: |
-  #         docker build -f ${GITHUB_WORKSPACE}/Dockerfile -t us-central1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/${{ secrets.GCP_REGISTRY }}/challenge-image-prod:latest .
-  #         docker push us-central1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/${{ secrets.GCP_REGISTRY }}/challenge-image-prod:latest
+      - name: Build and push image
+        run: |
+          docker build -f ${GITHUB_WORKSPACE}/Dockerfile -t us-central1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/${{ secrets.GCP_REGISTRY }}/challenge-image-prod:latest .
+          docker push us-central1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/${{ secrets.GCP_REGISTRY }}/challenge-image-prod:latest
 
-  # deploy:
-  #   needs: build-and-push
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Checkout code
-  #       uses: actions/checkout@v3
-  #       # with:
-  #       #   ref: ${{ inputs.branch-to-checkout }}
+  deploy:
+    needs: build-and-push
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        # with:
+        #   ref: ${{ inputs.branch-to-checkout }}
 
-  #     - name: Google Auth
-  #       id: auth
-  #       uses: 'google-github-actions/auth@v1' 
-  #       with:
-  #         credentials_json: '${{ secrets.GCP_SA_KEY }}'
+      - name: Google Auth
+        id: auth
+        uses: 'google-github-actions/auth@v1' 
+        with:
+          credentials_json: '${{ secrets.GCP_SA_KEY }}'
 
-  #     - name: Intall gcloud CLI
-  #       uses: google-github-actions/setup-gcloud@v1
-  #       with:
-  #         project_id: ${{ secrets.GCP_PROJECT_ID }}
+      - name: Intall gcloud CLI
+        uses: google-github-actions/setup-gcloud@v1
+        with:
+          project_id: ${{ secrets.GCP_PROJECT_ID }}
 
-  #     - name: Deploy to Cloud Run
-  #       id: 'deploy'
-  #       uses: 'google-github-actions/deploy-cloudrun@v1'
-  #       with:
-  #         service: 'challenge-service-prod'
-  #         image: 'us-central1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/${{ secrets.GCP_REGISTRY }}/challenge-image-prod:latest'
+      - name: Deploy to Cloud Run
+        id: 'deploy'
+        uses: 'google-github-actions/deploy-cloudrun@v1'
+        with:
+          service: 'challenge-service-prod'
+          image: 'us-central1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/${{ secrets.GCP_REGISTRY }}/challenge-image-prod:latest'
 
