@@ -1,35 +1,21 @@
 name: 'Continuous Delivery'
 
 on: 
-  workflow_run:
-    workflows: ['Continuous Integration']
+  pull_request:
     types:
-      - completed
+      - closed
+    branches:
+      - 'release/**'
 
 jobs:
-  merge-pull-request:
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-        # with:
-          # ref: ${{ inputs.branch-to-checkout }}
-      - id: automerge
-        name: automerge
-        uses: "pascalgn/automerge-action@v0.15.6"
-        env:
-          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
-          MERGE_LABELS: "automerge"
-
   build-and-push:
-    needs: merge-pull-request
+    if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-        # with:
-        #   ref: ${{ inputs.branch-to-checkout }}
+        with:
+          ref: 'main'
 
       - name: Google Auth
         id: auth
@@ -56,8 +42,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-        # with:
-        #   ref: ${{ inputs.branch-to-checkout }}
+        with:
+          ref: 'main'
 
       - name: Google Auth
         id: auth
