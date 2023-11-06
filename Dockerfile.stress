@@ -14,4 +14,4 @@ RUN pip install --no-cache-dir --upgrade -r /code/requirements-test.txt
 # 
 COPY ./ /code/
 
-CMD ["make", "tests"]
+CMD ["make", "stress-test-dev"]
