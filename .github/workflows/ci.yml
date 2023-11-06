@@ -100,17 +100,20 @@ jobs:
 
       - name: Create release branch with tag name
         run: |
-          git checkout -b release/${{ github.ref }}
-          git push --set-upstream origin release/${{ github.ref }}
+          git checkout -b release/${{ github.sha }}
+          git push --set-upstream origin release/${{ github.sha }}
 
   checkout-release-branch:
     needs: create-release-branch
+    permissions:
+      contents: write
+      pull-requests: write
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
         with:
-          ref: release/${{ github.ref }}
+          ref: 'release/${{ github.sha }}'
 
       - name: Create PR on main branche
         uses: repo-sync/pull-request@v2
