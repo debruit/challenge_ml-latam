@@ -5,7 +5,7 @@ on:
     types:
       - closed
     branches:
-      - 'release/**'
+      - 'main'
 
 jobs:
   build-and-push:
@@ -62,4 +62,7 @@ jobs:
         with:
           service: 'challenge-service-prod'
           image: 'us-central1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/${{ secrets.GCP_REGISTRY }}/challenge-image-prod:latest'
+
+      - name: 'Print URL'
+        run: echo ${{ steps.deploy.outputs.url }}
 
