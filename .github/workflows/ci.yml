@@ -118,10 +118,11 @@ jobs:
       - name: Create PR on main branche
         uses: repo-sync/pull-request@v2
         with:
+          source_branch: "release/${{ github.sha }}"
           destination_branch: "main"
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          pr_title: "Merge release/${{ github.ref }} to main"
-          pr_body: "Merge release/${{ github.ref }} to main after successful CI pipeline"
+          pr_title: "Merge release/${{ github.sha }} to main"
+          pr_body: "Merge release/${{ github.sha }} to main after successful CI pipeline"
           pr_label: "automerge"
 
       
